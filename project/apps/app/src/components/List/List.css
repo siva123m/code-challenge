@@ -1,0 +1,53 @@
+/* Basic styling for the Pokémon cards */
+.pokemon-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping of the cards to the next row */
+    gap: 15px; /* Space between the cards */
+    padding: 20px;
+    justify-content: space-between;
+    overflow-x: auto; /* Enables horizontal scrolling when necessary */
+  }
+  
+  .pokemon-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(20% - 12px); /* 5 cards per row, adjust width accordingly */
+    min-width: 120px; /* Prevent shrinking too much */
+    flex-grow: 1; /* Allow cards to grow to fill available space */
+    transition: transform 0.2s;
+  }
+  
+  .pokemon-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .pokemon-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 8px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .pokemon-card {
+      width: calc(33.33% - 12px); /* 3 cards per row for smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pokemon-card {
+      width: calc(50% - 12px); /* 2 cards per row for even smaller screens */
+    }
+  }
+  

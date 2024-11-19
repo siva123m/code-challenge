@@ -1,4 +1,5 @@
-import { List } from 'ui'
+
+import List from './components/List/list'
 
 const api = "https://pokeapi.co/api/v2/pokemon?limit=151"
 
