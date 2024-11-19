@@ -6,7 +6,8 @@ import slice from '../slice/slice'; // Make sure the import path and file name a
 // Create the Redux store and add the pokemonReducer to it
 const store = configureStore({
   reducer: {
-    pokemon: slice, // Use the pokemon slice reducer
+    pokemon: slice,
+     // Use the pokemon slice reducer
   },
 });
 

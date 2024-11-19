@@ -1,9 +1,14 @@
-// App.tsx
+// src/components/ListItem.tsx
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../redux/store/store'; // Import RootState and AppDispatch types
+import { removePokemon } from '../redux/slice/removePockmon'; // Import removePokemon action
 import './List.css';
+
 const api = "https://pokeapi.co/api/v2/pokemon?limit=151";
 
 interface Pokemon {
+  id: number;
   name: string;
   url: string;
 }
@@ -13,27 +18,28 @@ interface PokemonDetail {
   sprites: { front_default: string };
 }
 
-const List: React.FC = () => {
+const ListItem: React.FC = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // This will store the detailed information for each Pokemon, including images
+  
   const [pokemonDetails, setPokemonDetails] = useState<Map<string, PokemonDetail>>(new Map());
+  
+  const pokemonFromStore = useSelector((state: RootState) => state.pokemon.pokemon);
+  const dispatch: AppDispatch = useDispatch();  // Using dispatch function to dispatch actions
 
   useEffect(() => {
-    // Fetch the list of Pokémon names
     const fetchPokemons = async () => {
       try {
         const response = await fetch(api);
         const data = await response.json();
-        setPokemons(data.results); // Assuming 'results' contains the list of Pokémon
-        setLoading(false);
+        setPokemons(data.results);  // Set list of Pokémon
 
-        // Now fetch details (like image) for each Pokémon
+        // Fetch details for each Pokémon
         data.results.forEach((pokemon: Pokemon) => {
           fetchPokemonDetail(pokemon.url);
         });
+        setLoading(false);
       } catch (err) {
         setError("Failed to fetch Pokémon data");
         setLoading(false);
@@ -41,9 +47,8 @@ const List: React.FC = () => {
     };
 
     fetchPokemons();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []); 
 
-  // Fetch detailed information (including image) for each Pokémon
   const fetchPokemonDetail = async (url: string) => {
     try {
       const response = await fetch(url);
@@ -57,6 +62,11 @@ const List: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const handleRemovePokemon = (pokemonId: number) => {
+    // Dispatch the action to remove the Pokémon
+    dispatch(removePokemon({ id: pokemonId }));
+  };
+
   return (
     <div>
       <h1>Pokémon Cards</h1>
@@ -64,7 +74,6 @@ const List: React.FC = () => {
         {pokemons.map((pokemon) => {
           const pokemonDetail = pokemonDetails.get(pokemon.name);
 
-          // If the Pokémon detail is not loaded yet, don't render the card
           if (!pokemonDetail) {
             return <div key={pokemon.name} className="pokemon-card">Loading...</div>;
           }
@@ -73,6 +82,7 @@ const List: React.FC = () => {
             <div key={pokemon.name} className="pokemon-card">
               <img src={pokemonDetail.sprites.front_default} alt={pokemon.name} className="pokemon-image" />
               <h3>{pokemon.name}</h3>
+              <button onClick={() => handleRemovePokemon(pokemon.id)}>Remove</button>
             </div>
           );
         })}
@@ -81,4 +91,4 @@ const List: React.FC = () => {
   );
 };
 
-export default List;
+export default ListItem;
